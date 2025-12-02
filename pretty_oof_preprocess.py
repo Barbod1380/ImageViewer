@@ -77,3 +77,24 @@ def pretty_oof_preprocess(image: np.ndarray, save_path: str = None) -> np.ndarra
         cv2.imwrite(f"{save_path}/pretty_oof_preprocess.png", rescaled_image)
 
     return rescaled_image
+
+
+def apply_pretty_oof(image: np.ndarray) -> np.ndarray:
+    """
+    Apply the pretty_oof_preprocess function to an image, handling RGB to BGR conversion.
+
+    Args:
+        image (np.ndarray): The input image as a NumPy array (assumed to be RGB).
+
+    Returns:
+        np.ndarray: The processed image as a NumPy array.
+    """
+    # Convert RGB (from PIL) to BGR (for OpenCV)
+    image_bgr = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+
+    # a grayscale image is needed
+    gray_image = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2GRAY)
+
+
+    # Call the existing preprocessing function
+    return pretty_oof_preprocess(gray_image)

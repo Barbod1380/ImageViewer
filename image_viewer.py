@@ -485,13 +485,18 @@ class EnhancedImageViewer:
             spec.loader.exec_module(custom_module)
 
             process_function = None
-            for name, func in inspect.getmembers(
-                custom_module, inspect.isfunction
-            ):
-                sig = inspect.signature(func)
-                if len(sig.parameters) == 1:
-                    process_function = func
-                    break
+            # Look for a specific wrapper function for robustness
+            if os.path.basename(py_file_path) == "pretty_oof_preprocess.py":
+                process_function = getattr(custom_module, 'apply_pretty_oof', None)
+
+            if not process_function:
+                for name, func in inspect.getmembers(
+                    custom_module, inspect.isfunction
+                ):
+                    sig = inspect.signature(func)
+                    if len(sig.parameters) == 1:
+                        process_function = func
+                        break
 
             if not process_function:
                 self.update_status("No suitable function found in the script.")
